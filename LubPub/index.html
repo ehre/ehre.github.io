@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LubPub Länk-konverterare</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f9; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
+        input { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+        p { color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>LubPub</h2>
+    <p>Klistra in artikellänken nedan för att öppna via biblioteket.</p>
+    <input type="text" id="urlInput" placeholder="Klistra in länk här..." autofocus>
+    <p id="status"></p>
+</div>
+
+<script>
+    const input = document.getElementById('urlInput');
+    const status = document.getElementById('status');
+
+    input.addEventListener('paste', (e) => {
+        // Vänta ett ögonblick så att innehållet hinner landa i fältet
+        setTimeout(() => {
+            processUrl(input.value);
+        }, 10);
+    });
+
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            processUrl(input.value);
+        }
+    });
+
+    function processUrl(rawUrl) {
+        if (!rawUrl) return;
+
+        try {
+            // 1. Rensa tracking
+            let cleanUrl = rawUrl.split('?')[0];
+
+            // 2. Hantera domän-modifiering
+            // Vi använder URL-objektet i JS för att säkert extrahera domänen
+            let urlObj = new URL(cleanUrl);
+            let protocol = urlObj.protocol; // t.ex. https:
+            let host = urlObj.hostname;     // t.ex. www.nature.com
+            let pathname = urlObj.pathname; // t.ex. /articles/...
+            let search = urlObj.search;     // (kommer vara tom här pga split ovan)
+
+            // Ersätt punkter med bindestreck i domänen
+            let newHost = host.replace(/\./g, '-');
+            
+            // Bygg den nya URL:en
+            let finalUrl = `${protocol}//${newHost}.ludwig.lub.lu.se${pathname}${search}`;
+
+            status.innerText = "Omdirigerar...";
+            
+            // Öppna i samma flik (eller använd window.open(finalUrl, '_blank') för ny flik)
+            window.location.href = finalUrl;
+            
+        } catch (err) {
+            status.innerText = "Felaktig URL. Försök igen.";
+            console.error(err);
+        }
+    }
+</script>
+
+</body>
+</html>
