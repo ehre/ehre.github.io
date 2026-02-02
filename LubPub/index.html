@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LubPub Länk-konverterare</title>
+    <title>LubPub</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f9; }
-        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
-        input { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        p { color: #666; font-size: 0.9rem; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+        .container { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); width: 100%; max-width: 450px; text-align: center; }
+        h2 { color: #1a1a1a; margin-bottom: 0.5rem; }
+        p { color: #666; margin-bottom: 1.5rem; font-size: 0.95rem; }
+        input { width: 100%; padding: 14px; margin-bottom: 1rem; border: 2px solid #e1e4e8; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: border-color 0.2s; }
+        input:focus { outline: none; border-color: #0056b3; }
+        button { width: 100%; padding: 14px; background-color: #0056b3; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+        button:hover { background-color: #004494; }
+        .footer { margin-top: 1.5rem; font-size: 0.8rem; color: #999; }
     </style>
 </head>
 <body>
@@ -16,58 +21,55 @@
 <div class="container">
     <h2>LubPub</h2>
     <p>Klistra in artikellänken nedan för att öppna via biblioteket.</p>
-    <input type="text" id="urlInput" placeholder="Klistra in länk här..." autofocus>
-    <p id="status"></p>
+    
+    <input type="text" id="urlInput" placeholder="https://www.nature.com/..." autofocus>
+    <button id="openBtn">Öppna i ny flik</button>
+    
+    <div class="footer">Länken rensas automatiskt efter klick</div>
 </div>
 
 <script>
     const input = document.getElementById('urlInput');
-    const status = document.getElementById('status');
+    const button = document.getElementById('openBtn');
 
-    input.addEventListener('paste', (e) => {
-        // Vänta ett ögonblick så att innehållet hinner landa i fältet
-        setTimeout(() => {
-            processUrl(input.value);
-        }, 10);
-    });
-
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            processUrl(input.value);
-        }
-    });
-
-    function processUrl(rawUrl) {
+    // Funktion för att bearbeta och öppna länken
+    function handleNavigation() {
+        const rawUrl = input.value.trim();
+        
         if (!rawUrl) return;
 
         try {
             // 1. Rensa tracking
             let cleanUrl = rawUrl.split('?')[0];
 
-            // 2. Hantera domän-modifiering
-            // Vi använder URL-objektet i JS för att säkert extrahera domänen
+            // 2. Modifiera domän för LUB Proxy
             let urlObj = new URL(cleanUrl);
-            let protocol = urlObj.protocol; // t.ex. https:
-            let host = urlObj.hostname;     // t.ex. www.nature.com
-            let pathname = urlObj.pathname; // t.ex. /articles/...
-            let search = urlObj.search;     // (kommer vara tom här pga split ovan)
+            let newHost = urlObj.hostname.replace(/\./g, '-');
+            
+            let finalUrl = `${urlObj.protocol}//${newHost}.ludwig.lub.lu.se${urlObj.pathname}${urlObj.search}`;
 
-            // Ersätt punkter med bindestreck i domänen
-            let newHost = host.replace(/\./g, '-');
-            
-            // Bygg den nya URL:en
-            let finalUrl = `${protocol}//${newHost}.ludwig.lub.lu.se${pathname}${search}`;
+            // 3. Öppna i ny flik
+            window.open(finalUrl, '_blank');
 
-            status.innerText = "Omdirigerar...";
-            
-            // Öppna i samma flik (eller använd window.open(finalUrl, '_blank') för ny flik)
-            window.location.href = finalUrl;
-            
+            // 4. Rensa fältet för nästa länk
+            input.value = '';
+            input.focus();
+
         } catch (err) {
-            status.innerText = "Felaktig URL. Försök igen.";
+            alert("Kunde inte tolka länken. Kontrollera att den är korrekt formaterad.");
             console.error(err);
         }
     }
+
+    // Lyssna på klick
+    button.addEventListener('click', handleNavigation);
+
+    // Lyssna på Enter-tangenten i fältet
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleNavigation();
+        }
+    });
 </script>
 
 </body>
