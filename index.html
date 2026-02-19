@@ -9,12 +9,9 @@
 :root {
   color-scheme: light dark;
 
-  /* Brand-inspired red */
-  --brand-light: #b33a32;
-  --brand-dark:  #ff6b5e;
-
+  --brand: #b33a32;       /* Same color in both modes */
   --bg-light: #f7f7f7;
-  --bg-dark:  #111213;
+  --bg-dark:  #111213;    /* Slightly off-black */
 }
 
 body {
@@ -31,22 +28,9 @@ body {
                "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* Dark mode */
 @media (prefers-color-scheme: dark) {
   body {
     background: var(--bg-dark);
-  }
-}
-
-.logo-wrapper {
-  padding: 12px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.6);
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo-wrapper {
-    background: rgba(255,255,255,0.05);
   }
 }
 
@@ -61,21 +45,13 @@ h1 {
   font-weight: 300;
   letter-spacing: 0.12em;
   font-size: clamp(1.4rem, 2.5vw, 1.9rem);
-  color: var(--brand-light);
-}
-
-@media (prefers-color-scheme: dark) {
-  h1 {
-    color: var(--brand-dark);
-  }
+  color: var(--brand);
 }
 </style>
 </head>
 
 <body>
-  <div class="logo-wrapper">
-    <img src="ehrencrona_logo.gif" alt="Ehrencrona logo">
-  </div>
+  <img src="ehrencrona_logo.gif" alt="Ehrencrona logo">
   <h1>ehrencrona.org</h1>
 </body>
 </html>
