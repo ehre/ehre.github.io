@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "apps": [
+    {
+      "id": "lubpub",
+      "name": "LubPub",
+      "url": "https://lubpub.ehrencrona.org/",
+      "description": "LUB-proxylänk från vanlig URL (rensar tracking).",
+      "order": 10
+    }
+  ]
+}
