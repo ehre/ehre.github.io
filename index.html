@@ -6,7 +6,6 @@
 <title>ehrencrona.org</title>
 <link rel="stylesheet" href="./shared.css">
 </head>
-
 <body>
 <div class="page">
   <header class="brand-header">
@@ -19,7 +18,6 @@
   <main class="content">
     <div class="content-inner">
       <h1 class="home-title">ehrencrona.org</h1>
-
       <section aria-label="Apps">
         <div id="apps" class="apps" role="list"></div>
         <div id="note" class="note" aria-live="polite"></div>
@@ -29,82 +27,61 @@
 </div>
 
 <script>
-(async function () {
+(() => {
   const appsEl = document.getElementById('apps');
   const noteEl = document.getElementById('note');
+  const txt = v => (v ?? '').toString();
+  const setNote = m => (noteEl.textContent = m || '');
 
-  function setNote(msg) { noteEl.textContent = msg || ''; }
-  function safeText(s) { return (s ?? '').toString(); }
+  const card = (app) => {
+    const a = document.createElement('a');
+    a.className = 'app-card';
+    a.href = txt(app.url);
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.setAttribute('role', 'listitem');
 
-  function render(apps) {
-    appsEl.innerHTML = '';
-    if (!apps.length) { setNote('Inga appar att visa ännu.'); return; }
+    const title = document.createElement('div');
+    title.className = 'app-title';
+    title.innerHTML = `<strong></strong><span>→</span>`;
+    title.querySelector('strong').textContent = txt(app.name);
 
-    const frag = document.createDocumentFragment();
+    const desc = document.createElement('div');
+    desc.className = 'app-desc';
+    desc.textContent = txt(app.description);
 
-    for (const app of apps) {
-      const a = document.createElement('a');
-      a.className = 'app-card';
-      a.href = safeText(app.url);
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.setAttribute('role', 'listitem');
+    a.append(title, desc);
+    return a;
+  };
 
-      const title = document.createElement('div');
-      title.className = 'app-title';
+  (async () => {
+    try {
+      setNote('Laddar appar…');
 
-      const strong = document.createElement('strong');
-      strong.textContent = safeText(app.name);
+      const res = await fetch('https://ehrencrona.org/apps.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('apps.json fetch failed');
 
-      const arrow = document.createElement('span');
-      arrow.textContent = '→';
+      const data = await res.json();
+      const apps = Array.isArray(data.apps) ? data.apps.slice() : [];
 
-      title.appendChild(strong);
-      title.appendChild(arrow);
+      apps.sort((a, b) => {
+        const oa = Number.isFinite(+a.order) ? +a.order : 1e9;
+        const ob = Number.isFinite(+b.order) ? +b.order : 1e9;
+        return oa - ob || txt(a.name).localeCompare(txt(b.name), 'sv');
+      });
 
-      const desc = document.createElement('div');
-      desc.className = 'app-desc';
-      desc.textContent = safeText(app.description);
+      appsEl.innerHTML = '';
+      if (!apps.length) return setNote('Inga appar att visa ännu.');
 
-      a.appendChild(title);
-      a.appendChild(desc);
-
-      frag.appendChild(a);
+      const frag = document.createDocumentFragment();
+      apps.forEach(app => frag.appendChild(card(app)));
+      appsEl.appendChild(frag);
+      setNote('');
+    } catch (e) {
+      console.error(e);
+      setNote('Kunde inte ladda applistan.');
     }
-
-    appsEl.appendChild(frag);
-    setNote('');
-  }
-
-  try {
-    setNote('Laddar appar…');
-
-    // Use absolute URL to avoid any apex/www or relative-path edge cases
-    const res = await fetch('https://ehrencrona.org/apps.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error('Kunde inte läsa apps.json');
-
-    // Basic sanity check: if we got HTML back, JSON parsing will fail later.
-    const ct = (res.headers.get('content-type') || '').toLowerCase();
-    if (ct && !ct.includes('json')) {
-      throw new Error('apps.json verkar inte levereras som JSON');
-    }
-
-    const data = await res.json();
-    const apps = Array.isArray(data.apps) ? data.apps.slice() : [];
-
-    apps.sort((x, y) => {
-      const ox = Number.isFinite(Number(x.order)) ? Number(x.order) : 1e9;
-      const oy = Number.isFinite(Number(y.order)) ? Number(y.order) : 1e9;
-      if (ox !== oy) return ox - oy;
-      return safeText(x.name).localeCompare(safeText(y.name), 'sv');
-    });
-
-    render(apps);
-
-  } catch (err) {
-    console.error(err);
-    setNote('Kunde inte ladda applistan.');
-  }
+  })();
 })();
 </script>
 </body>
