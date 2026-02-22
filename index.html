@@ -4,228 +4,47 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ehrencrona.org</title>
-
-<style>
-:root{
-  color-scheme: light dark;
-
-  --brand: #b33a32;
-  --brand-hover: #9c2f29;
-
-  --bg-light: #f7f7f7;
-  --bg-dark:  #111213;
-
-  --card-light: #ffffff;
-  --card-dark:  #17181a;
-
-  --text-light: #1a1a1a;
-  --text-dark:  #e8e8e8;
-
-  --muted-light: #666;
-  --muted-dark:  #a8a8a8;
-
-  --border-light: #e1e4e8;
-  --border-dark:  #2a2c2f;
-}
-
-body{
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-
-  background: var(--bg-light);
-  color: var(--text-light);
-
-  font-family: system-ui, -apple-system, BlinkMacSystemFont,
-               "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
-@media (prefers-color-scheme: dark){
-  body{
-    background: var(--bg-dark);
-    color: var(--text-dark);
-  }
-}
-
-main{
-  width: 100%;
-  max-width: 760px;
-  padding: 32px 18px 40px;
-  box-sizing: border-box;
-}
-
-header{
-  display: grid;
-  place-items: center;
-}
-
-img{
-  max-width: min(60vw, 320px);
-  height: auto;
-  display: block;
-}
-
-@media (prefers-color-scheme: dark){
-  img{
-    filter:
-      drop-shadow(0 0 1px rgba(0,0,0,0.95))
-      drop-shadow(0 0 2px rgba(0,0,0,0.6));
-  }
-}
-
-h1{
-  margin: 1.4rem 0 0.8rem;
-  font-weight: 300;
-  letter-spacing: 0.12em;
-  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
-  color: var(--brand);
-}
-
-.apps{
-  margin-top: 18px;
-  display: grid;
-  gap: 12px;
-}
-
-.app{
-  text-decoration: none;
-  text-align: left;
-  display: block;
-
-  background: var(--card-light);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-
-  padding: 14px 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-
-  transition: border-color 0.15s ease, transform 0.15s ease;
-}
-
-/* Remove default link colors */
-.app,
-.app:visited{
-  color: inherit;
-}
-
-@media (prefers-color-scheme: dark){
-  .app{
-    background: var(--card-dark);
-    border-color: var(--border-dark);
-    box-shadow: 0 10px 26px rgba(0,0,0,0.25);
-  }
-}
-
-.app:hover{
-  border-color: color-mix(in srgb, var(--brand) 60%, var(--border-light));
-  transform: translateY(-1px);
-}
-
-@media (prefers-reduced-motion: reduce){
-  .app{ transition: none; }
-  .app:hover{ transform: none; }
-}
-
-.app-title{
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-/* Darker red in light mode */
-.app-title strong{
-  font-size: 1.05rem;
-  font-weight: 650;
-  color: #8f2c26;
-}
-
-/* Hover → brand color */
-.app:hover .app-title strong{
-  color: var(--brand);
-}
-
-/* Slightly lighter red for dark mode */
-@media (prefers-color-scheme: dark){
-  .app-title strong{
-    color: #c04a42;
-  }
-}
-
-.app-title span{
-  color: var(--brand);
-  font-size: 0.95rem;
-}
-
-.app-desc{
-  margin: 6px 0 0;
-  color: var(--muted-light);
-  font-size: 0.95rem;
-  line-height: 1.35;
-}
-
-@media (prefers-color-scheme: dark){
-  .app-desc{ color: var(--muted-dark); }
-}
-
-.note{
-  margin-top: 14px;
-  font-size: 0.92rem;
-  color: var(--muted-light);
-}
-
-@media (prefers-color-scheme: dark){
-  .note{ color: var(--muted-dark); }
-}
-</style>
+<link rel="stylesheet" href="./shared.css">
 </head>
 
 <body>
-<main>
-  <header>
+<div class="page">
+  <header class="brand-header">
     <picture>
       <source srcset="ehrencrona_logo_darkmode.png" media="(prefers-color-scheme: dark)">
-      <img src="ehrencrona_logo.png" alt="Ehrencrona logo">
+      <img class="brand-logo" src="ehrencrona_logo.png" alt="Ehrencrona logo">
     </picture>
-    <h1>ehrencrona.org</h1>
   </header>
 
-  <section aria-label="Apps">
-    <div id="apps" class="apps" role="list"></div>
-    <div id="note" class="note" aria-live="polite"></div>
-  </section>
-</main>
+  <main class="content">
+    <div class="content-inner">
+      <h1 class="home-title">ehrencrona.org</h1>
+
+      <section aria-label="Apps">
+        <div id="apps" class="apps" role="list"></div>
+        <div id="note" class="note" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+</div>
 
 <script>
 (async function () {
   const appsEl = document.getElementById('apps');
   const noteEl = document.getElementById('note');
 
-  function setNote(msg) {
-    noteEl.textContent = msg || '';
-  }
-
-  function safeText(s) {
-    return (s ?? '').toString();
-  }
+  function setNote(msg) { noteEl.textContent = msg || ''; }
+  function safeText(s) { return (s ?? '').toString(); }
 
   function render(apps) {
     appsEl.innerHTML = '';
-
-    if (!apps.length) {
-      setNote('Inga appar att visa ännu.');
-      return;
-    }
+    if (!apps.length) { setNote('Inga appar att visa ännu.'); return; }
 
     const frag = document.createDocumentFragment();
 
     for (const app of apps) {
       const a = document.createElement('a');
-      a.className = 'app';
+      a.className = 'app-card';
       a.href = safeText(app.url);
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
