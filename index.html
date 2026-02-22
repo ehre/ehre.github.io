@@ -79,8 +79,15 @@
   try {
     setNote('Laddar appar…');
 
-    const res = await fetch('./apps.json', { cache: 'no-store' });
+    // Use absolute URL to avoid any apex/www or relative-path edge cases
+    const res = await fetch('https://ehrencrona.org/apps.json', { cache: 'no-store' });
     if (!res.ok) throw new Error('Kunde inte läsa apps.json');
+
+    // Basic sanity check: if we got HTML back, JSON parsing will fail later.
+    const ct = (res.headers.get('content-type') || '').toLowerCase();
+    if (ct && !ct.includes('json')) {
+      throw new Error('apps.json verkar inte levereras som JSON');
+    }
 
     const data = await res.json();
     const apps = Array.isArray(data.apps) ? data.apps.slice() : [];
