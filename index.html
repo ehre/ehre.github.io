@@ -69,7 +69,6 @@ img{
   display: block;
 }
 
-/* Dark mode refinement for logo */
 @media (prefers-color-scheme: dark){
   img{
     filter:
@@ -107,6 +106,12 @@ h1{
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
+/* Remove default link colors */
+.app,
+.app:visited{
+  color: inherit;
+}
+
 @media (prefers-color-scheme: dark){
   .app{
     background: var(--card-dark);
@@ -132,10 +137,23 @@ h1{
   gap: 12px;
 }
 
+/* Darker red in light mode */
 .app-title strong{
   font-size: 1.05rem;
   font-weight: 650;
-  color: inherit;
+  color: #8f2c26;
+}
+
+/* Hover → brand color */
+.app:hover .app-title strong{
+  color: var(--brand);
+}
+
+/* Slightly lighter red for dark mode */
+@media (prefers-color-scheme: dark){
+  .app-title strong{
+    color: #c04a42;
+  }
 }
 
 .app-title span{
@@ -154,7 +172,6 @@ h1{
   .app-desc{ color: var(--muted-dark); }
 }
 
-/* Small error/loading text */
 .note{
   margin-top: 14px;
   font-size: 0.92rem;
@@ -163,14 +180,6 @@ h1{
 
 @media (prefers-color-scheme: dark){
   .note{ color: var(--muted-dark); }
-}
-
-/* Simple accent link style if needed later */
-a.inline{
-  color: var(--brand);
-}
-a.inline:hover{
-  color: var(--brand-hover);
 }
 </style>
 </head>
@@ -257,7 +266,6 @@ a.inline:hover{
     const data = await res.json();
     const apps = Array.isArray(data.apps) ? data.apps.slice() : [];
 
-    // Stable ordering: order asc, then name asc
     apps.sort((x, y) => {
       const ox = Number.isFinite(Number(x.order)) ? Number(x.order) : 1e9;
       const oy = Number.isFinite(Number(y.order)) ? Number(y.order) : 1e9;
@@ -269,7 +277,7 @@ a.inline:hover{
 
   } catch (err) {
     console.error(err);
-    setNote('Kunde inte ladda applistan. Kontrollera apps.json.');
+    setNote('Kunde inte ladda applistan.');
   }
 })();
 </script>
