@@ -8,5 +8,12 @@
       "description": "Öppna artikel via LUB-proxylänk (och rensa tracking)",
       "order": 10
     }
+    {
+      "id": "test",
+      "name": "TestApp",
+      "url": "https://test.ehrencrona.org/",
+      "description": "Testa annan app",
+      "order": 11
+    }
   ]
 }
