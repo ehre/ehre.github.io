@@ -1,20 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ehrencrona.org</title>
 
 <style>
-:root {
+:root{
   color-scheme: light dark;
 
-  --brand: #b33a32;       /* Same color in both modes */
+  --brand: #b33a32;
+  --brand-hover: #9c2f29;
+
   --bg-light: #f7f7f7;
-  --bg-dark:  #111213;    /* Slightly off-black */
+  --bg-dark:  #111213;
+
+  --card-light: #ffffff;
+  --card-dark:  #17181a;
+
+  --text-light: #1a1a1a;
+  --text-dark:  #e8e8e8;
+
+  --muted-light: #666;
+  --muted-dark:  #a8a8a8;
+
+  --border-light: #e1e4e8;
+  --border-dark:  #2a2c2f;
 }
 
-body {
+body{
   margin: 0;
   min-height: 100vh;
   display: flex;
@@ -24,44 +38,240 @@ body {
   text-align: center;
 
   background: var(--bg-light);
+  color: var(--text-light);
+
   font-family: system-ui, -apple-system, BlinkMacSystemFont,
                "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
+@media (prefers-color-scheme: dark){
+  body{
     background: var(--bg-dark);
+    color: var(--text-dark);
   }
 }
 
-img {
+main{
+  width: 100%;
+  max-width: 760px;
+  padding: 32px 18px 40px;
+  box-sizing: border-box;
+}
+
+header{
+  display: grid;
+  place-items: center;
+}
+
+img{
   max-width: min(60vw, 320px);
   height: auto;
   display: block;
 }
-/* Dark mode refinement */
-@media (prefers-color-scheme: dark) {
-  img {
+
+/* Dark mode refinement for logo */
+@media (prefers-color-scheme: dark){
+  img{
     filter:
       drop-shadow(0 0 1px rgba(0,0,0,0.95))
       drop-shadow(0 0 2px rgba(0,0,0,0.6));
   }
 }
-h1 {
-  margin: 1.4rem 0 0;
+
+h1{
+  margin: 1.4rem 0 0.8rem;
   font-weight: 300;
   letter-spacing: 0.12em;
   font-size: clamp(1.4rem, 2.5vw, 1.9rem);
   color: var(--brand);
 }
+
+.apps{
+  margin-top: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.app{
+  text-decoration: none;
+  text-align: left;
+  display: block;
+
+  background: var(--card-light);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+
+  padding: 14px 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+@media (prefers-color-scheme: dark){
+  .app{
+    background: var(--card-dark);
+    border-color: var(--border-dark);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+  }
+}
+
+.app:hover{
+  border-color: color-mix(in srgb, var(--brand) 60%, var(--border-light));
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce){
+  .app{ transition: none; }
+  .app:hover{ transform: none; }
+}
+
+.app-title{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.app-title strong{
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: inherit;
+}
+
+.app-title span{
+  color: var(--brand);
+  font-size: 0.95rem;
+}
+
+.app-desc{
+  margin: 6px 0 0;
+  color: var(--muted-light);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+@media (prefers-color-scheme: dark){
+  .app-desc{ color: var(--muted-dark); }
+}
+
+/* Small error/loading text */
+.note{
+  margin-top: 14px;
+  font-size: 0.92rem;
+  color: var(--muted-light);
+}
+
+@media (prefers-color-scheme: dark){
+  .note{ color: var(--muted-dark); }
+}
+
+/* Simple accent link style if needed later */
+a.inline{
+  color: var(--brand);
+}
+a.inline:hover{
+  color: var(--brand-hover);
+}
 </style>
 </head>
 
 <body>
-  <picture>
-    <source srcset="ehrencrona_logo_darkmode.png" media="(prefers-color-scheme: dark)">
-    <img src="ehrencrona_logo.png" alt="Ehrencrona logo">
-  </picture>
-  <h1>ehrencrona.org</h1>
+<main>
+  <header>
+    <picture>
+      <source srcset="ehrencrona_logo_darkmode.png" media="(prefers-color-scheme: dark)">
+      <img src="ehrencrona_logo.png" alt="Ehrencrona logo">
+    </picture>
+    <h1>ehrencrona.org</h1>
+  </header>
+
+  <section aria-label="Apps">
+    <div id="apps" class="apps" role="list"></div>
+    <div id="note" class="note" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+(async function () {
+  const appsEl = document.getElementById('apps');
+  const noteEl = document.getElementById('note');
+
+  function setNote(msg) {
+    noteEl.textContent = msg || '';
+  }
+
+  function safeText(s) {
+    return (s ?? '').toString();
+  }
+
+  function render(apps) {
+    appsEl.innerHTML = '';
+
+    if (!apps.length) {
+      setNote('Inga appar att visa ännu.');
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+
+    for (const app of apps) {
+      const a = document.createElement('a');
+      a.className = 'app';
+      a.href = safeText(app.url);
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.setAttribute('role', 'listitem');
+
+      const title = document.createElement('div');
+      title.className = 'app-title';
+
+      const strong = document.createElement('strong');
+      strong.textContent = safeText(app.name);
+
+      const arrow = document.createElement('span');
+      arrow.textContent = '→';
+
+      title.appendChild(strong);
+      title.appendChild(arrow);
+
+      const desc = document.createElement('div');
+      desc.className = 'app-desc';
+      desc.textContent = safeText(app.description);
+
+      a.appendChild(title);
+      a.appendChild(desc);
+
+      frag.appendChild(a);
+    }
+
+    appsEl.appendChild(frag);
+    setNote('');
+  }
+
+  try {
+    setNote('Laddar appar…');
+
+    const res = await fetch('./apps.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('Kunde inte läsa apps.json');
+
+    const data = await res.json();
+    const apps = Array.isArray(data.apps) ? data.apps.slice() : [];
+
+    // Stable ordering: order asc, then name asc
+    apps.sort((x, y) => {
+      const ox = Number.isFinite(Number(x.order)) ? Number(x.order) : 1e9;
+      const oy = Number.isFinite(Number(y.order)) ? Number(y.order) : 1e9;
+      if (ox !== oy) return ox - oy;
+      return safeText(x.name).localeCompare(safeText(y.name), 'sv');
+    });
+
+    render(apps);
+
+  } catch (err) {
+    console.error(err);
+    setNote('Kunde inte ladda applistan. Kontrollera apps.json.');
+  }
+})();
+</script>
 </body>
 </html>
