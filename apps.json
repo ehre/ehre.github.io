@@ -5,7 +5,7 @@
       "id": "lubpub",
       "name": "LubPub",
       "url": "https://lubpub.ehrencrona.org/",
-      "description": "Öppna artikel via LUB-proxylänk (och rensa tracking)",
+      "description": "Öppna artikel-länk eller PMID via LUB-proxy (och rensa tracking)",
       "order": 10
     },
     {
