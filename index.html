@@ -10,10 +10,12 @@
 <body>
 <div class="page">
   <header class="brand-header">
-    <picture>
+    <a href="https://ehrencrona.org">
+     <picture>
       <source srcset="ehrencrona_logo_darkmode.png" media="(prefers-color-scheme: dark)">
       <img class="brand-logo" src="ehrencrona_logo.png" alt="Ehrencrona logo">
-    </picture>
+     </picture>
+    </a>
   </header>
 
   <main class="content">
@@ -38,8 +40,6 @@
     const a = document.createElement('a');
     a.className = 'app-card';
     a.href = txt(app.url);
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
     a.setAttribute('role', 'listitem');
 
     const title = document.createElement('div');
