@@ -2,18 +2,25 @@
   "schemaVersion": 1,
   "apps": [
     {
+      "id": "rdgene",
+      "name": "RDgene",
+      "url": "https://rdgene.ehrencrona.org/",
+      "description": "Simple lookup tool - enter a gene symbol to open curated rare disease resources",
+      "order": 10
+    },
+    {
       "id": "lubpub",
       "name": "LubPub",
       "url": "https://lubpub.ehrencrona.org/",
       "description": "Öppna artikel-länk eller PMID via LUB-proxy (och rensa tracking)",
-      "order": 10
+      "order": 11
     },
     {
       "id": "periodiska",
       "name": "Periodiska systemet",
       "url": "https://periodiska.ehrencrona.org/",
       "description": "Periodiska systemet (because why not)",
-      "order": 11
+      "order": 12
     }
   ]
 }
