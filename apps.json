@@ -9,11 +9,11 @@
       "order": 10
     },
     {
-      "id": "test",
-      "name": "TestApp",
-      "url": "https://test.ehrencrona.org/",
-      "description": "Testa annan app",
-      "order": 9
+      "id": "periodiska",
+      "name": "Periodiska systemet",
+      "url": "https://periodiska.ehrencrona.org/",
+      "description": "Periodiska systemet (because why not)",
+      "order": 11
     }
   ]
 }
