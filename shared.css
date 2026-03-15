@@ -10,9 +10,7 @@
   --shadow:      light-dark(0 6px 18px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.25));
   --title-color: light-dark(#8f2c26, #c04a42);
 }
-
 * { box-sizing: border-box }
-
 body {
   margin: 0;
   min-height: 100vh;
@@ -20,26 +18,20 @@ body {
   color: var(--text);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
-
 .page { min-height: 100vh; display: flex; flex-direction: column }
-
 .brand-header { display: flex; justify-content: center; padding: 28px 18px 10px }
-
 .brand-logo {
   max-width: min(60vw, 320px);
   height: auto;
   display: block;
 }
-
 @media (prefers-color-scheme: dark) {
   .brand-logo {
     filter: drop-shadow(0 0 1px rgba(0,0,0,.95)) drop-shadow(0 0 2px rgba(0,0,0,.6));
   }
 }
-
 .content { width: 100%; flex: 1; display: flex; justify-content: center; padding: 18px 18px 40px }
 .content-inner { width: 100%; max-width: 760px }
-
 .home-title {
   margin: 6px 0 .8rem;
   font-weight: 300;
@@ -48,9 +40,7 @@ body {
   color: var(--brand);
   text-align: center;
 }
-
 .apps { margin-top: 18px; display: grid; gap: 12px }
-
 .app-card {
   text-decoration: none;
   text-align: left;
@@ -62,52 +52,42 @@ body {
   box-shadow: var(--shadow);
   transition: border-color .15s ease, transform .15s ease;
 }
-
 .app-card, .app-card:visited { color: inherit }
-
 .app-card:hover {
   border-color: color-mix(in srgb, var(--brand) 60%, var(--border));
   transform: translateY(-1px);
 }
-
 @media (prefers-reduced-motion: reduce) {
   .app-card { transition: none }
   .app-card:hover { transform: none }
 }
-
 .app-title {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
 }
-
 .app-title strong {
   font-size: 1.05rem;
   font-weight: 650;
   color: var(--title-color);
 }
-
 .app-card:hover .app-title strong { color: var(--brand) }
-
 .app-title span { color: var(--brand); font-size: .95rem }
-
 .app-desc {
   margin: 6px 0 0;
   color: var(--muted);
   font-size: .95rem;
   line-height: 1.35;
 }
-
 .note { margin-top: 14px; font-size: .92rem; color: var(--muted) }
-
 .card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
+  padding: 24px 28px;
   box-shadow: var(--shadow);
 }
-
 .field {
   width: 100%;
   padding: 14px;
@@ -119,9 +99,7 @@ body {
   background: transparent;
   color: inherit;
 }
-
 .field:focus { outline: none; border-color: var(--brand) }
-
 .btn {
   width: 100%;
   padding: 14px;
@@ -134,5 +112,20 @@ body {
   cursor: pointer;
   transition: background-color .2s;
 }
-
 .btn:hover { background: var(--brand-hover) }
+.search-row { display: flex; gap: 10px; align-items: flex-start }
+.search-row .field { margin: 0; flex: 1 }
+.search-btn {
+  padding: 14px 22px;
+  background: var(--brand);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background-color .2s;
+  white-space: nowrap;
+}
+.search-btn:hover { background: var(--brand-hover) }
+.footer { margin-top: 1.5rem; font-size: .8rem; color: var(--muted); text-align: center }
